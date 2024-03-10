@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Dto\CurrencyDto;
 use App\Entity\Currency;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,5 +31,25 @@ class CurrencyRepository extends ServiceEntityRepository
     public function findByName(string $name): ?Currency
     {
         return $this->findOneBy(['name' => $name]);
+    }
+
+    public function upsert(Uuid $id, CurrencyDto $dto): Currency
+    {
+        $alreadyExists = $this->findById($id);
+
+        $entity = new Currency();
+
+        $entity->setId($id);
+        $entity->setName($dto->name);
+        $entity->setCurrencyCode($dto->currencyCode);
+        $entity->setExchangeRate($dto->exchangeRate);
+
+        if (!$alreadyExists) {
+            $this->getEntityManager()->persist($entity);
+        }
+
+        $this->getEntityManager()->flush();
+
+        return $entity;
     }
 }
