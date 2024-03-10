@@ -43,9 +43,10 @@ class FetchCurrencyDataCommand extends Command
                 new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate)
             );
 
-            $this->logger->alert(sprintf('Currency %s updated. Current exchange rate is now: %f.',
+            $this->logger->alert(sprintf('Currency %s updated. Current exchange rate is now: (1 PLN = %f %s)',
                 $exchangeRate->currencyCode,
-                $exchangeRate->exchangeRate
+                1 / $exchangeRate->exchangeRate * 10000,
+                $exchangeRate->currencyCode,
             ));
         }
 
