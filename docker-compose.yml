@@ -1,0 +1,20 @@
+version: "3.6"
+services:
+  php-fpm:
+    container_name: php
+    build:
+      context: .
+      dockerfile: docker/php-fpm/Dockerfile
+    working_dir: /application
+    volumes: [ './app:/application', './docker/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/docker-php.ini' ]
+  webserver:
+    image: 'nginx:alpine'
+    working_dir: /application
+    volumes: [ './app:/application', './docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf' ]
+    ports: [ '8000:80' ]
+  mysql:
+    image: 'mysql:8.0'
+    working_dir: /application
+    volumes: [ '.:/application' ]
+    environment: { MYSQL_ROOT_PASSWORD: root, MYSQL_DATABASE: database, MYSQL_USER: user, MYSQL_PASSWORD: password }
+    ports: [ '8001:3306' ]
