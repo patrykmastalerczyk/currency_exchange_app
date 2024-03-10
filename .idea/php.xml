@@ -63,6 +63,8 @@
       <path value="$PROJECT_DIR$/app/vendor/nikic/php-parser" />
       <path value="$PROJECT_DIR$/app/vendor/symfony/process" />
       <path value="$PROJECT_DIR$/app/vendor/symfony/maker-bundle" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/uid" />
+      <path value="$PROJECT_DIR$/app/vendor/symfony/polyfill-uuid" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
