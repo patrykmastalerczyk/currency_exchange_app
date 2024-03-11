@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Dto\CurrencyDto;
+use App\Factory\CurrencyFactory;
 use App\Repository\CurrencyRepository;
 use App\Service\CurrencyService;
 use Psr\Log\LoggerInterface;
@@ -18,6 +19,7 @@ class FetchCurrencyDataCommand extends Command
     public function __construct(
         private readonly CurrencyRepository $currencyRepository,
         private readonly CurrencyService $currencyService,
+        private readonly CurrencyFactory $currencyFactory,
         private readonly LoggerInterface $logger
     )
     {
@@ -36,12 +38,13 @@ class FetchCurrencyDataCommand extends Command
         $this->logger->alert('Fetching currency exchange rates...');
 
         foreach ($exchangeRates as $exchangeRate) {
-            $existingRate = $this->currencyRepository->findByName($exchangeRate->name);
+//            $existingRate = $this->currencyRepository->findByName($exchangeRate->name);
+//
+//            if ($existingRate) {
+//                $this->currencyFactory->create(new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate));
+//            }
 
-            $this->currencyRepository->upsert(
-                $existingRate?->getId() ?? Uuid::v4(),
-                new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate)
-            );
+            $this->currencyFactory->create(new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate));
 
             $this->logger->alert(sprintf('Currency %s updated. Current exchange rate is now: (1 PLN = %f %s)',
                 $exchangeRate->currencyCode,
@@ -49,6 +52,8 @@ class FetchCurrencyDataCommand extends Command
                 $exchangeRate->currencyCode,
             ));
         }
+
+        $this->logger->alert(sprintf('Fetched %d exchange rates total.', count($exchangeRates)));
 
         return Command::SUCCESS;
     }
