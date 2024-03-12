@@ -32,4 +32,13 @@ class CurrencyRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['name' => $name]);
     }
+
+    public function upsert(Currency $currency): void
+    {
+        if ($currency->getId() === null) {
+            $this->getEntityManager()->persist($currency);
+        }
+
+        $this->getEntityManager()->flush();
+    }
 }

@@ -38,13 +38,8 @@ class FetchCurrencyDataCommand extends Command
         $this->logger->alert('Fetching currency exchange rates...');
 
         foreach ($exchangeRates as $exchangeRate) {
-//            $existingRate = $this->currencyRepository->findByName($exchangeRate->name);
-//
-//            if ($existingRate) {
-//                $this->currencyFactory->create(new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate));
-//            }
-
-            $this->currencyFactory->create(new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate));
+            $entity = $this->currencyFactory->create(new CurrencyDto($exchangeRate->name, $exchangeRate->currencyCode, $exchangeRate->exchangeRate));
+            $this->currencyRepository->upsert($entity);
 
             $this->logger->alert(sprintf('Currency %s updated. Current exchange rate is now: (1 PLN = %f %s)',
                 $exchangeRate->currencyCode,
